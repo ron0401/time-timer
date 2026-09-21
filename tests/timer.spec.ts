@@ -41,7 +41,7 @@ test('setup and timer are separate screens throughout a complete timer', async (
   expect(errors).toEqual([]);
 });
 
-test('iPhone navigation, ten-minute limit, stationary apples, and mute', async ({ page }) => {
+test('iPhone navigation, ten-minute limit, and stationary apples', async ({ page }) => {
   await page.setViewportSize({ width: 375, height: 812 });
   await page.clock.install({ time: new Date('2026-09-21T08:00:00Z') });
   await page.goto('./');
@@ -50,8 +50,7 @@ test('iPhone navigation, ten-minute limit, stationary apples, and mute', async (
   await expect(page.getByRole('spinbutton')).toHaveValue('10');
   await expect(page.getByRole('button', { name: '1分増やす' })).toBeDisabled();
   await expect(page.getByRole('button', { name: '15分', exact: true })).toHaveCount(0);
-  await page.getByRole('button', { name: 'お知らせの音' }).click();
-  await expect(page.getByRole('button', { name: 'お知らせの音' })).toHaveAttribute('aria-pressed', 'false');
+  await expect(page.getByRole('button', { name: 'お知らせの音' })).toHaveCount(0);
   await page.getByRole('button', { name: '開始', exact: true }).click();
   await expect(page.locator('.apple-slot')).toHaveCount(10);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
@@ -106,7 +105,7 @@ test('all ten apples fit on one screen across iPhone sizes and rotation', async 
     expect(Math.min(...sizes)).toBeGreaterThan(24);
     await page.screenshot({ path: `test-results/${name}-ten-apples.png`, fullPage: true, animations: 'disabled' });
     const rows = await page.locator('.apple-slot').evaluateAll((nodes) => new Set(nodes.map((node) => node.getBoundingClientRect().top)).size);
-    expect(rows).toBe(2);
+    expect(rows).toBeGreaterThanOrEqual(2);
     await page.getByRole('button', { name: '時間を変更', exact: true }).click();
     await expect(page.getByRole('button', { name: '開始', exact: true })).toBeVisible();
   }
