@@ -49,7 +49,7 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
         <div class="clock-wrap"><div class="clock" id="clock" role="timer" aria-live="off" aria-label="残り5分">05:00</div><p id="clock-caption">あなただけの、こつこつ時間</p></div>
         <fieldset id="settings"><legend>じかんをきめる</legend>
           <div class="stepper"><button id="minus" type="button" aria-label="1分減らす">−</button><label class="minutes-label"><input id="minutes" type="number" min="1" max="60" step="1" value="5" inputmode="numeric" aria-label="タイマーの分数"/><span>分</span></label><button id="plus" type="button" aria-label="1分増やす">＋</button></div>
-          <div class="presets" aria-label="おすすめの分数">${[5, 10, 15, 25].map((minutes) => `<button type="button" data-minutes="${minutes}" aria-pressed="${minutes === 5}">${minutes}<span>分</span></button>`).join('')}</div>
+          <div class="presets" aria-label="おすすめの分数">${[5, 10, 15, 25].map((minutes) => `<button type="button" data-minutes="${minutes}" aria-label="${minutes}分" aria-pressed="${minutes === 5}">${minutes}<span>分</span></button>`).join('')}</div>
           <p class="setting-hint" id="setting-hint">1〜60分でえらべるよ</p>
         </fieldset>
         <button class="primary-button" id="primary" type="button">${icons.play}<span>はじめる</span></button>
@@ -87,10 +87,11 @@ function positionWorm(shouldScroll = false): void {
   const center = target.offsetLeft + target.offsetWidth / 2;
   const faceLeft = center < apples.clientWidth / 2;
   worm.dataset.facing = faceLeft ? 'left' : 'right';
-  worm.style.left = `${center - (faceLeft ? 36 : 109)}px`;
-  worm.style.top = `${target.offsetTop + 43}px`;
+  const wormWidth = worm.offsetWidth;
+  worm.style.left = `${center - (faceLeft ? wormWidth * 0.11 : wormWidth * 0.89)}px`;
+  worm.style.top = `${target.offsetTop + 72}px`;
   if (shouldScroll) {
-    const bottom = target.offsetTop + 170;
+    const bottom = target.offsetTop + 117;
     if (bottom > scroll.scrollTop + scroll.clientHeight || target.offsetTop < scroll.scrollTop) {
       scroll.scrollTop = Math.max(0, target.offsetTop - 32);
     }

@@ -22,19 +22,24 @@ export function apple(id: string, bite = 0): string {
 
 export const core = `<svg viewBox="0 0 80 88" fill="none" aria-hidden="true"><ellipse cx="40" cy="83" rx="17" ry="3" fill="#443c2c" opacity=".05"/><path d="M40 26c-2-8 0-14 4-18" stroke="#b2a082" stroke-width="3" stroke-linecap="round"/><path d="M43 19c2-9 12-10 17-8-3 8-10 11-17 8" fill="#b5c5a1"/><path d="M26 30c9-5 17-5 28 0-14 12-14 28 0 43-10 5-18 5-28 0 14-15 14-31 0-43" fill="#f4e3bf"/><path d="M26 30c9-5 17-5 28 0M26 73c9 4 19 4 28 0" stroke="#e0ac94" stroke-width="5" stroke-linecap="round"/><path d="M38 48c-6 6-4 10 0 9m5-3c5 6 4 8 0 8" fill="#b19976"/></svg>`;
 
-export const caterpillar = `<svg viewBox="0 0 188 108" fill="none" aria-hidden="true">
-  <ellipse cx="90" cy="97" rx="75" ry="6" fill="#577345" opacity=".12"/>
-  <g class="worm-body"><path d="m33 87-4 6m24-6-2 7m25-7 1 7m22-9 3 7m21-12 3 9" stroke="#60814f" stroke-width="5" stroke-linecap="round"/>
-  <circle cx="31" cy="73" r="20" fill="#99ba77"/>
-  <circle cx="54" cy="70" r="24" fill="#accf89"/><circle cx="82" cy="72" r="25" fill="#b8d997"/><circle cx="108" cy="69" r="27" fill="#a4ca80"/>
-  <path d="M40 57c3-3 7-4 10-4M69 56c3-3 7-4 10-3M96 51c3-3 7-4 10-3" stroke="#d0e7ad" stroke-width="4" stroke-linecap="round"/></g>
-  <g class="worm-head"><path d="M137 28c-5-10-11-11-13-17m29 15c3-11 9-12 10-18" stroke="#648751" stroke-width="3.5" stroke-linecap="round"/>
-  <circle cx="123" cy="10" r="4" fill="#9bbb76"/><circle cx="163" cy="8" r="4" fill="#9bbb76"/>
-  <path d="M174 57c0 22-13 35-34 35-22 0-33-15-33-33 0-22 13-38 33-38s34 16 34 36" fill="#b6d893"/>
-  <ellipse cx="123" cy="65" rx="7" ry="4.5" fill="#e9aa9a"/><ellipse cx="163" cy="65" rx="7" ry="4.5" fill="#e9aa9a"/>
-  <g class="worm-eyes"><ellipse cx="130" cy="54" rx="3" ry="4" fill="#42513a"/><ellipse cx="157" cy="54" rx="3" ry="4" fill="#42513a"/><circle cx="131" cy="53" r=".9" fill="white"/><circle cx="158" cy="53" r=".9" fill="white"/></g>
-  <path class="worm-mouth" d="M137 66q7 8 14 0" stroke="#546345" stroke-width="2.8" stroke-linecap="round"/>
-  <path d="M119 39c4-6 10-9 16-9" stroke="#d9edbb" stroke-width="4" stroke-linecap="round"/></g>
+export const caterpillar = `<svg viewBox="0 0 120 56" fill="none" aria-hidden="true">
+  <ellipse cx="59" cy="47" rx="51" ry="3" fill="#476833" opacity=".12"/>
+  <g class="worm-body">
+    <path d="m23 39-1 6m16-7 1 7m17-7 1 7m17-7 2 7m15-9 3 5" stroke="#4f7837" stroke-width="2.5" stroke-linecap="round"/>
+    <ellipse cx="15" cy="34" rx="9" ry="8" fill="#7fac42"/>
+    <ellipse cx="29" cy="32" rx="11" ry="11" fill="#89b84a"/>
+    <ellipse cx="45" cy="30" rx="12" ry="13" fill="#95c453"/>
+    <ellipse cx="62" cy="30" rx="12" ry="13" fill="#8fbd4b"/>
+    <ellipse cx="79" cy="31" rx="12" ry="12" fill="#81b042"/>
+    <path d="M26 24v4m16-7v5m17-5v5m17-4v5" stroke="#bbd77c" stroke-width="2.5" stroke-linecap="round"/>
+    <g fill="#638f35"><circle cx="29" cy="35" r="1.1"/><circle cx="46" cy="35" r="1.1"/><circle cx="63" cy="35" r="1.1"/><circle cx="80" cy="35" r="1.1"/></g>
+  </g>
+  <g class="worm-head">
+    <path d="m94 20 1-5m8 7 4-4" stroke="#527b34" stroke-width="1.5" stroke-linecap="round"/>
+    <ellipse cx="97" cy="31" rx="12" ry="12" fill="#81ad40"/>
+    <circle cx="103" cy="28" r="1.5" fill="#334d25"/>
+    <path class="worm-mouth" d="m107 34-3 1" stroke="#405d2d" stroke-width="1.7" stroke-linecap="round"/>
+  </g>
 </svg>`;
 
 export const flower = `<svg viewBox="0 0 50 70" fill="none" aria-hidden="true"><path d="M25 35v32m0-13C13 52 9 44 11 42c9-1 13 5 14 12m0-8c10-1 14-8 13-11-9 0-12 6-13 11" stroke="#95b18a" stroke-width="2.5" fill="#adc299" stroke-linecap="round"/><path d="M25 18C13 1 1 20 16 27 0 35 17 48 25 35c8 13 25 0 9-8C49 20 37 1 25 18" fill="#fffdf5"/><circle cx="25" cy="27" r="6" fill="#eacb79"/></svg>`;
