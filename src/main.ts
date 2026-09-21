@@ -23,7 +23,7 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
       <div class="setup-card">
         <fieldset id="settings"><legend>時間（1〜${MAX_MINUTES}分）</legend>
           <div class="stepper"><button id="minus" type="button" aria-label="1分減らす">−</button><label class="minutes-label"><input id="minutes" type="number" min="1" max="${MAX_MINUTES}" step="1" value="5" inputmode="numeric" aria-label="タイマーの分数"/><span>分</span></label><button id="plus" type="button" aria-label="1分増やす">＋</button></div>
-          <div class="presets" aria-label="分数を選択">${[1, 3, 5, 10].map((minutes) => `<button type="button" data-minutes="${minutes}" aria-label="${minutes}分" aria-pressed="${minutes === 5}">${minutes}<span>分</span></button>`).join('')}</div>
+          <div class="presets" aria-label="分数を選択">${[1, 5, 10, 20].map((minutes) => `<button type="button" data-minutes="${minutes}" aria-label="${minutes}分" aria-pressed="${minutes === 5}">${minutes}<span>分</span></button>`).join('')}</div>
         </fieldset>
         <button class="primary-button" id="start" type="button">${icons.play}<span>開始</span></button>
       </div>

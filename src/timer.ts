@@ -1,7 +1,7 @@
 export type TimerStatus = 'idle' | 'running' | 'paused' | 'finished';
 
 export const MINUTE = 60_000;
-export const MAX_MINUTES = 10;
+export const MAX_MINUTES = 20;
 
 export function normalizeMinutes(value: number): number {
   return Number.isFinite(value) ? Math.max(1, Math.min(MAX_MINUTES, Math.round(value))) : 5;
