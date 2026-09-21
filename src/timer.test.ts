@@ -44,7 +44,9 @@ test('reset restores all apples and keeps the selected duration', () => {
 });
 test('invalid settings are normalized and running duration cannot change', () => {
   assert.equal(normalizeMinutes(0), 1);
-  assert.equal(normalizeMinutes(61), 60);
+  assert.equal(normalizeMinutes(10), 10);
+  assert.equal(normalizeMinutes(11), 10);
+  assert.equal(normalizeMinutes(60), 10);
   assert.equal(normalizeMinutes(2.6), 3);
   assert.equal(normalizeMinutes(Number.NaN), 5);
   const timer = new SnackTimer(2);

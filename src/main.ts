@@ -1,6 +1,6 @@
 import './style.css';
 import { apple, caterpillar, core, flower, icons } from './art.ts';
-import { formatTime, MINUTE, SnackTimer } from './timer.ts';
+import { formatTime, MAX_MINUTES, MINUTE, SnackTimer } from './timer.ts';
 
 const timer = new SnackTimer(5);
 let soundEnabled = true;
@@ -24,9 +24,9 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
         <p>青虫が1分でリンゴを1つ食べます。</p>
       </div>
       <div class="setup-card">
-        <fieldset id="settings"><legend>時間（1〜60分）</legend>
-          <div class="stepper"><button id="minus" type="button" aria-label="1分減らす">−</button><label class="minutes-label"><input id="minutes" type="number" min="1" max="60" step="1" value="5" inputmode="numeric" aria-label="タイマーの分数"/><span>分</span></label><button id="plus" type="button" aria-label="1分増やす">＋</button></div>
-          <div class="presets" aria-label="分数を選択">${[5, 10, 15, 25].map((minutes) => `<button type="button" data-minutes="${minutes}" aria-label="${minutes}分" aria-pressed="${minutes === 5}">${minutes}<span>分</span></button>`).join('')}</div>
+        <fieldset id="settings"><legend>時間（1〜${MAX_MINUTES}分）</legend>
+          <div class="stepper"><button id="minus" type="button" aria-label="1分減らす">−</button><label class="minutes-label"><input id="minutes" type="number" min="1" max="${MAX_MINUTES}" step="1" value="5" inputmode="numeric" aria-label="タイマーの分数"/><span>分</span></label><button id="plus" type="button" aria-label="1分増やす">＋</button></div>
+          <div class="presets" aria-label="分数を選択">${[1, 3, 5, 10].map((minutes) => `<button type="button" data-minutes="${minutes}" aria-label="${minutes}分" aria-pressed="${minutes === 5}">${minutes}<span>分</span></button>`).join('')}</div>
         </fieldset>
         <button class="primary-button" id="start" type="button">${icons.play}<span>開始</span></button>
       </div>
@@ -42,10 +42,10 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
         <div class="garden-scene" id="garden-scene">
           <div class="sun" aria-hidden="true"><svg viewBox="0 0 74 74"><g stroke="#ead49a" stroke-width="2.5" stroke-linecap="round"><path d="M37 4v6m0 54v6M4 37h6m54 0h6M14 14l4 4m38 38 4 4M14 60l4-4m38-38 4-4"/></g><circle cx="37" cy="37" r="21" fill="#f2dfa4"/><g fill="#b29960"><circle cx="30" cy="36" r="1.5"/><circle cx="44" cy="36" r="1.5"/></g><path d="M33 42q4 4 8 0" fill="none" stroke="#b29960" stroke-width="1.4" stroke-linecap="round"/></svg></div>
           <div class="cloud cloud-one" aria-hidden="true"></div><div class="cloud cloud-two" aria-hidden="true"></div>
-          <div class="apple-scroll" id="apple-scroll" tabindex="0" aria-label="りんごばたけ。長いタイマーではスクロールできます">
+          <div class="apple-field" id="apple-field">
             <div class="apple-tray" id="apple-tray">
               <ol class="apples" id="apples" aria-label="1つ1分のりんご"></ol>
-              <div class="caterpillar" id="caterpillar">${caterpillar}<span class="munch" aria-hidden="true">もぐもぐ</span></div>
+              <div class="caterpillar" id="caterpillar">${caterpillar}</div>
             </div>
           </div>
           <div class="garden-bottom" aria-hidden="true"><span class="flower flower-one">${flower}</span><span class="flower flower-two">${flower}</span><span class="sprout sprout-one"></span><span class="sprout sprout-two"></span></div>
@@ -79,28 +79,40 @@ const settings = element<HTMLFieldSetElement>('settings');
 const worm = element('caterpillar');
 const apples = element('apples');
 const scene = element('garden-scene');
-const scroll = element('apple-scroll');
+const tray = element('apple-tray');
 
 function announce(message: string): void {
   element('announcement').textContent = message;
 }
 
-function positionWorm(shouldScroll = false): void {
+function positionWorm(): void {
   const index = Math.min(timer.eaten(Date.now()), timer.minutes - 1);
   const target = apples.children[index] as HTMLElement | undefined;
   if (!target) return;
-  const center = target.offsetLeft + target.offsetWidth / 2;
+  const art = target.querySelector<HTMLElement>('.apple-art')!;
+  const bounds = art.getBoundingClientRect();
+  const trayBounds = tray.getBoundingClientRect();
+  const center = bounds.left + bounds.width / 2 - trayBounds.left;
   const faceLeft = center < apples.clientWidth / 2;
   worm.dataset.facing = faceLeft ? 'left' : 'right';
   const wormWidth = worm.offsetWidth;
   worm.style.left = `${center - (faceLeft ? wormWidth * 0.11 : wormWidth * 0.89)}px`;
-  worm.style.top = `${target.offsetTop + 72}px`;
-  if (shouldScroll) {
-    const bottom = target.offsetTop + 117;
-    if (bottom > scroll.scrollTop + scroll.clientHeight || target.offsetTop < scroll.scrollTop) {
-      scroll.scrollTop = Math.max(0, target.offsetTop - 32);
-    }
-  }
+  worm.style.top = `${bounds.bottom - trayBounds.top - worm.offsetHeight * 0.65}px`;
+}
+
+function layoutApples(): void {
+  if (timer.status === 'idle' || !tray.clientWidth || !tray.clientHeight) return;
+  const columns = timer.minutes <= 3 ? timer.minutes : Math.ceil(timer.minutes / 2);
+  const rows = Math.ceil(timer.minutes / columns);
+  apples.style.setProperty('--columns', String(columns));
+  apples.style.setProperty('--rows', String(rows));
+  const style = getComputedStyle(apples);
+  const cellWidth = (tray.clientWidth - parseFloat(style.columnGap) * (columns - 1)) / columns;
+  const cellHeight = (tray.clientHeight - parseFloat(style.rowGap) * (rows - 1)) / rows;
+  // Leave space for each number and for the caterpillar below the apple.
+  const size = Math.max(1, Math.min(70, cellWidth - 8, (cellHeight - 22) / 1.45));
+  tray.style.setProperty('--apple-size', `${size}px`);
+  positionWorm();
 }
 
 function renderScene(now: number): void {
@@ -124,10 +136,9 @@ function renderScene(now: number): void {
     return `<li class="apple-slot${isEaten ? ' is-eaten' : ''}${active ? ' is-active' : ''}" aria-label="${index + 1}個目：${isEaten ? '食べ終わり' : active ? '食事中' : '未着手'}"><span class="apple-number" aria-hidden="true">${isEaten ? '✓' : String(index + 1).padStart(2, '0')}</span><span class="apple-art">${isEaten ? core : apple(String(index), appleBite)}</span>${active ? '<span class="apple-crumbs" aria-hidden="true">· ·</span>' : ''}</li>`;
   }).join('');
   scene.dataset.state = timer.status;
-  scene.classList.toggle('many-apples', timer.minutes > 5);
   element('eaten').textContent = String(eaten);
   element('total').textContent = String(timer.minutes);
-  positionWorm(advanced);
+  layoutApples();
   if (advanced && timer.status === 'running') announce(`${eaten}個食べました。残り${timer.minutes - eaten}個です。`);
 }
 
@@ -164,20 +175,18 @@ function render(now = Date.now()): void {
     primary.classList.toggle('is-running', timer.status === 'running');
   }
   element<HTMLButtonElement>('minus').disabled = timer.minutes <= 1;
-  element<HTMLButtonElement>('plus').disabled = timer.minutes >= 60;
+  element<HTMLButtonElement>('plus').disabled = timer.minutes >= MAX_MINUTES;
   document.querySelectorAll<HTMLButtonElement>('[data-minutes]').forEach((button) => button.setAttribute('aria-pressed', String(Number(button.dataset.minutes) === timer.minutes)));
   if (screenChanged) {
-    scroll.scrollTop = 0;
     window.scrollTo(0, 0);
     element(isSetup ? 'setup-heading' : 'timer-heading').focus({ preventScroll: true });
-    if (!isSetup) positionWorm();
+    if (!isSetup) layoutApples();
   }
 }
 
 function setMinutes(value: number): void {
   timer.setMinutes(value);
   input.value = String(timer.minutes);
-  scroll.scrollTop = 0;
   render();
 }
 
@@ -270,7 +279,7 @@ element('sound').addEventListener('click', () => {
   element('sound').setAttribute('aria-pressed', String(soundEnabled));
   if (soundEnabled) void prepareAudio();
 });
-new ResizeObserver(() => positionWorm()).observe(apples);
+new ResizeObserver(layoutApples).observe(tray);
 document.addEventListener('visibilitychange', tick);
 window.addEventListener('pageshow', tick);
 setInterval(tick, 250);
