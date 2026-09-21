@@ -35,7 +35,10 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
       <h1 class="sr-only" id="timer-heading" tabindex="-1">タイマー</h1>
       <div class="run-toolbar">
         <button class="back-button" id="reset" type="button"><span aria-hidden="true">←</span> 時間を変更</button>
-        <div class="remaining"><span class="status" id="status">実行中</span><div class="clock" id="clock" role="timer" aria-live="off" aria-label="残り5分">05:00</div></div>
+        <div class="remaining">
+          <div class="timer-readout"><span class="status" id="status">実行中</span><div class="clock" id="clock" role="timer" aria-live="off" aria-label="残り5分">05:00</div></div>
+          <button class="timer-toggle" id="primary" type="button" aria-label="一時停止" title="一時停止">${icons.pause}</button>
+        </div>
       </div>
       <section class="garden" aria-label="あおむしがりんごを食べる様子">
         <div class="garden-heading"><h2>${icons.leaf} リンゴ</h2><span class="minute-badge">1 りんご = 1 分</span></div>
@@ -56,7 +59,6 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
           <div class="progress-track" id="progress" role="progressbar" aria-label="タイマーの進み具合" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div id="progress-fill"></div></div>
         </div>
       </section>
-      <div class="run-controls"><button class="primary-button" id="primary" type="button">${icons.pause}<span>一時停止</span></button></div>
     </section>
     <div class="sr-only" id="announcement" role="status" aria-live="polite" aria-atomic="true"></div>
   </main>
@@ -171,8 +173,10 @@ function render(now = Date.now()): void {
     element('status').textContent = content.status;
     element('status').dataset.state = timer.status;
     element('timer-heading').textContent = timer.status === 'finished' ? 'タイマー終了' : 'タイマー';
-    primary.innerHTML = `${timer.status === 'running' ? icons.pause : timer.status === 'finished' ? icons.reset : icons.play}<span>${content.button}</span>`;
-    primary.classList.toggle('is-running', timer.status === 'running');
+    primary.innerHTML = timer.status === 'running' ? icons.pause : timer.status === 'finished' ? icons.reset : icons.play;
+    primary.setAttribute('aria-label', content.button);
+    primary.title = content.button;
+    primary.dataset.state = timer.status;
   }
   element<HTMLButtonElement>('minus').disabled = timer.minutes <= 1;
   element<HTMLButtonElement>('plus').disabled = timer.minutes >= MAX_MINUTES;
